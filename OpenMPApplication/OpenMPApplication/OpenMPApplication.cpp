@@ -20,6 +20,7 @@ int main()
 		int ID = omp_get_thread_num();
 		printf("hello(%d)", ID);
 		printf(" world(%d) \n", ID);
+		printf("There are %d threads.\n", omp_get_num_threads());
 	}
 
 	printf("There are %d threads.\n", omp_get_num_threads());
