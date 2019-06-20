@@ -2,6 +2,8 @@
 #include <iostream>
 #include <omp.h>
 
+// Test push
+
 // Exercise 2: Calculate Pi
 // Some useful omp functions:
 // int omp_get_num_threads();  // get number of threads in the team
