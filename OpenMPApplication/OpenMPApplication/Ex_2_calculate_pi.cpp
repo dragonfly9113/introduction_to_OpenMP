@@ -1,49 +1,6 @@
-// OpenMPApplication.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include "pch.h"
 #include <iostream>
 #include <omp.h>
-
-// Exercise 1B: Hello world
-int main_hello()
-{
-	printf("Num of CPU: %d\n", omp_get_num_procs());
-	printf("Max threads: %d\n", omp_get_max_threads());
-
-	//omp_set_num_threads(4);
-
-	printf("There are %d threads.\n", omp_get_num_threads());
-
-	#pragma omp parallel
-	{
-		int ID = omp_get_thread_num();
-		printf("hello(%d)", ID);
-		printf(" world(%d) \n", ID);
-		printf("There are %d threads.\n", omp_get_num_threads());
-	}
-
-	printf("There are %d threads.\n", omp_get_num_threads());
-
-	return 0;
-}
-
-// Module 3: creating threads
-/*
-int main()
-{
-	double A[1000];
-	omp_set_num_threads(4);
-
-	#pragma omp parallel
-	{
-		int ID = omp_get_thread_num();
-		pooh(ID, A);
-	}
-
-	printf("all done\n");
-}
-*/
 
 // Exercise 2: Calculate Pi
 // Some useful omp functions:
@@ -55,7 +12,7 @@ static long num_steps = 100000;
 double step;
 
 // The original sequential version
-int main_orig()
+int main_seq()
 {
 	int i;
 	double x, pi, sum = 0.0;
@@ -129,7 +86,7 @@ int main_seq_2_section()
 	return 0;
 }
 
-// The OpenMP version
+// My OpenMP version
 int main()
 {
 	int i;
