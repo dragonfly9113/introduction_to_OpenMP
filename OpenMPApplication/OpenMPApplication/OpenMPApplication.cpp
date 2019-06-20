@@ -54,10 +54,8 @@ int main()
 static long num_steps = 100000;
 double step;
 
-int main_p();
-
 // The original sequential version
-int main()
+int main_orig()
 {
 	int i;
 	double x, pi, sum = 0.0;
@@ -83,57 +81,94 @@ int main()
 	printf("pi = %f\n", pi);
 	printf("Time used = %f ms\n", (end - start) * 1000);
 
-	printf("\nNow call the parallel version:\n\n");
-	main_p();
+	return 0;
+}
+
+// Test more on the sequential version
+int main_seq_2_section()
+{
+	int i;
+	double x, pi, sum = 0.0;
+	double start, end;
+	double total = 0.0;
+
+	printf("Num of CPU: %d\n", omp_get_num_procs());
+	printf("Max threads: %d\n", omp_get_max_threads());
+
+	start = omp_get_wtime();
+	step = 1.0 / (double)num_steps;
+	// The new num_steps
+	long num_steps_new = num_steps / 2;
+
+	for (i = 0; i < num_steps_new; i++)
+	{
+		x = (i + 0.5) * step;
+		sum += 4.0 / (1.0 + x * x);
+	}
+	total += sum;
+	printf("sum = %f and total = %f\n", sum, total);
+
+	sum = 0.0;
+	for (i = num_steps_new; i < 2 * num_steps_new; i++)
+	{
+		x = (i + 0.5) * step;
+		sum += 4.0 / (1.0 + x * x);
+	}
+	total += sum;
+	printf("sum = %f and total = %f\n", sum, total);
+
+	pi = step * total;
+	end = omp_get_wtime();
+
+	printf("pi = %f\n", pi);
+	printf("Time used = %f ms\n", (end - start) * 1000);
+
+	//printf("\nNow call the parallel version:\n\n");
+	//main_p();
 
 	return 0;
 }
 
 // The OpenMP version
-int main_p()
+int main()
 {
-	//int i;
-	double pi, sum = 0.0;
-	double start, end;
-
+	int i;
+	double pi;
+	double start_time, end_time;
+	double total = 0.0;
 	const int num_threads = 4;
 
 	printf("Num of CPU: %d\n", omp_get_num_procs());
 	printf("Max threads: %d\n", omp_get_max_threads());
 	omp_set_num_threads(num_threads);
 
-	start = omp_get_wtime();
+	start_time = omp_get_wtime();
 
-	// The new num_steps and the new step:
-	double old_step = 1.0 / (double)num_steps;
-	num_steps /= num_threads;
 	step = 1.0 / (double)num_steps;
+	// The new num_steps
+	long num_steps_new = num_steps / num_threads;
 
 #pragma omp parallel
 	{
+		double x, sum = 0.0;
 		int ID = omp_get_thread_num();
-		double tmp_sum = 0.0;
-		double x;
+		long start = ID * num_steps_new, end = (ID + 1) * num_steps_new;
 
-		for (int i = 0; i < num_steps; i++)
+		for (int i = start; i < end; i++)
 		{
-			i += ID * num_steps;
-			if (ID > 0) i += 1;
-
 			x = (i + 0.5) * step;
-			tmp_sum += 4.0 / (1.0 + x * x);
+			sum += 4.0 / (1.0 + x * x);
 		}
-		printf("ID = %d and tmp_sum = %f\n", ID, tmp_sum);
-		sum += tmp_sum;
+
+		total += sum;
+		printf("ID = %d and tmp_sum = %f and total = %f\n", ID, sum, total);
 	}
 
-	printf("step = %f and sum = %f\n", old_step, sum);
-
-	pi = old_step * sum;
-	end = omp_get_wtime();
+	pi = step * total;
+	end_time = omp_get_wtime();
 
 	printf("pi = %f\n", pi);
-	printf("Time used = %f ms\n", (end - start) * 1000);
+	printf("Time used = %f ms\n", (end_time - start_time) * 1000);
 
 	return 0;
 }
