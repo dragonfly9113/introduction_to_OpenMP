@@ -2,19 +2,17 @@
 #include <iostream>
 #include <omp.h>
 
-// Test push
-
 // Exercise 2: Calculate Pi
 // Some useful omp functions:
 // int omp_get_num_threads();  // get number of threads in the team
 // int omp_get_thread_num();   // get the Thread ID or rank
 // double omp_get_wtime();     // time in seconds since a fixed point in the past
 
-static long num_steps = 100000;
+static long num_steps = 1000000000;
 double step;
 
 // The original sequential version
-int main_seq()
+int main_orig()
 {
 	int i;
 	double x, pi, sum = 0.0;
@@ -32,13 +30,11 @@ int main_seq()
 		sum += 4.0 / (1.0 + x * x);
 	}
 
-	printf("step = %f and sum = %f\n", step, sum);
-
 	pi = step * sum;
 	end = omp_get_wtime();
 
 	printf("pi = %f\n", pi);
-	printf("Time used = %f ms\n", (end - start) * 1000);
+	printf("Time used = %f s\n", end - start);
 
 	return 0;
 }
@@ -80,7 +76,7 @@ int main_seq_2_section()
 	end = omp_get_wtime();
 
 	printf("pi = %f\n", pi);
-	printf("Time used = %f ms\n", (end - start) * 1000);
+	printf("Time used = %f s\n", (end - start));
 
 	//printf("\nNow call the parallel version:\n\n");
 	//main_p();
@@ -91,11 +87,11 @@ int main_seq_2_section()
 // My OpenMP version
 int main()
 {
-	int i;
+	int i, nthreads;
 	double pi;
 	double start_time, end_time;
 	double total = 0.0;
-	const int num_threads = 4;
+	const int num_threads = 8;
 
 	printf("Num of CPU: %d\n", omp_get_num_procs());
 	printf("Max threads: %d\n", omp_get_max_threads());
@@ -110,8 +106,15 @@ int main()
 #pragma omp parallel
 	{
 		double x, sum = 0.0;
-		int ID = omp_get_thread_num();
-		long start = ID * num_steps_new, end = (ID + 1) * num_steps_new;
+		int ID, nthrds;
+		long start, end;
+
+		ID = omp_get_thread_num();
+		nthrds = omp_get_num_threads();
+		if (ID == 0) nthreads = nthrds;
+
+		start = ID * num_steps_new;
+		end = (ID + 1) * num_steps_new;
 
 		for (int i = start; i < end; i++)
 		{
@@ -120,14 +123,14 @@ int main()
 		}
 
 		total += sum;
-		printf("ID = %d and tmp_sum = %f and total = %f\n", ID, sum, total);
 	}
 
 	pi = step * total;
 	end_time = omp_get_wtime();
 
 	printf("pi = %f\n", pi);
-	printf("Time used = %f ms\n", (end_time - start_time) * 1000);
+	printf("nthreads = %d and Time used = %f s\n", nthreads, end_time - start_time);
 
 	return 0;
 }
+
