@@ -173,7 +173,7 @@ void main_first_ver_from_class()
 
 // Second version from the class: add a pad to avoid "false sharing"
 #define PAD 8	// Assume 64 byte L1 cache line size, remember sizeof(double) = 8
-void main()
+void main_add_padding()
 {
 	int i, nthreads;
 	double pi, sum[NUM_THREADS][PAD], start_time, end_time;

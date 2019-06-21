@@ -29,5 +29,8 @@
     <ClCompile Include="Ex_2_calculate_pi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Ex_3_calc_pi_with_sync.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
