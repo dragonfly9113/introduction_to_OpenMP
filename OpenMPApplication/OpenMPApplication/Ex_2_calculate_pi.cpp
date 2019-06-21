@@ -136,8 +136,7 @@ int main_my_openmp()
 
 // First version from the class
 #define NUM_THREADS 8
-
-void main()
+void main_first_ver_from_class()
 {
 	int i, nthreads;
 	double pi, sum[NUM_THREADS], start_time, end_time;
@@ -172,3 +171,41 @@ void main()
 	printf("nthreads = %d and Time used = %f s\n", nthreads, end_time - start_time);
 }
 
+// Second version from the class: add a pad to avoid "false sharing"
+#define PAD 8	// Assume 64 byte L1 cache line size, remember sizeof(double) = 8
+void main()
+{
+	int i, nthreads;
+	double pi, sum[NUM_THREADS][PAD], start_time, end_time;
+
+	start_time = omp_get_wtime();
+
+	step = 1.0 / (double)num_steps;
+	omp_set_num_threads(NUM_THREADS);
+
+#pragma omp parallel
+	{
+		int i, id, nthrds;
+		double x;
+
+		id = omp_get_thread_num();
+		nthrds = omp_get_num_threads();
+		if (id == 0) nthreads = nthrds;
+
+		for (i = id, sum[id][0] = 0.0; i < num_steps; i += nthrds)
+		{
+			x = (i + 0.5) * step;
+			sum[id][0] += 4.0 / (1.0 + x * x);
+		}
+	}
+
+	for (i = 0, pi = 0.0; i < nthreads; i++)
+		pi += sum[i][0] * step;
+
+	end_time = omp_get_wtime();
+
+	printf("pi = %f\n", pi);
+	printf("nthreads = %d and Time used = %f s\n", nthreads, end_time - start_time);
+
+	printf("size of double = %d\n", sizeof(double));
+}
