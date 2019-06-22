@@ -7,7 +7,7 @@
 #define NUM_THREADS 8
 
 // Calculate pi using synchronization
-void main()
+void main_pi_sync()
 {
 	int i, nthreads;
 	double pi, start_time, end_time, total = 0.0;
