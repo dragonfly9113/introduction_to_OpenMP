@@ -18,7 +18,7 @@ void main()
 
 	omp_set_num_threads(NUM_THREADS);
 
-#pragma omp parallel
+#pragma omp parallel 
 	{
 		int id, nthrds;
 		double x;
@@ -27,7 +27,7 @@ void main()
 		nthrds = omp_get_num_threads();
 		if (id == 0) nthreads = nthrds;
 
-#pragma omp for reduction(+:sum)
+#pragma omp for reduction(+:sum) schedule(static)
 		for (i = 0; i < num_steps; i++)
 		{
 			x = (i + 0.5) * step;
