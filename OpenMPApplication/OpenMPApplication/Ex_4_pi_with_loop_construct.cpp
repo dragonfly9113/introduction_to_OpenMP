@@ -2,7 +2,7 @@
 #include <iostream>
 #include <omp.h>
 
-#define NUM_THREADS 8
+#define NUM_THREADS 4
 
 void main()
 {
@@ -12,6 +12,9 @@ void main()
 
 	long num_steps = 1000000000;
 	double step;
+
+	printf("Num of CPU: %d\n", omp_get_num_procs());
+	printf("Max threads: %d\n", omp_get_max_threads());
 
 	start = omp_get_wtime();
 	step = 1.0 / (double)num_steps;
@@ -27,7 +30,7 @@ void main()
 		nthrds = omp_get_num_threads();
 		if (id == 0) nthreads = nthrds;
 
-#pragma omp for reduction(+:sum)
+#pragma omp for reduction(+:sum) schedule(dynamic,10000)
 		for (i = 0; i < num_steps; i++)
 		{
 			x = (i + 0.5) * step;
