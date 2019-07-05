@@ -2,7 +2,7 @@
 #include <iostream>
 #include <omp.h>
 
-#define NUM_THREADS 8
+#define NUM_THREADS 4
 
 void main()
 {
@@ -12,6 +12,9 @@ void main()
 
 	long num_steps = 1000000000;
 	double step;
+
+	printf("Num of CPU: %d\n", omp_get_num_procs());
+	printf("Max threads: %d\n", omp_get_max_threads());
 
 	start = omp_get_wtime();
 	step = 1.0 / (double)num_steps;
