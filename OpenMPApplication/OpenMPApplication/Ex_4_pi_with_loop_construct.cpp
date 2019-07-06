@@ -4,7 +4,7 @@
 
 #define NUM_THREADS 4
 
-void main()
+void main_ex4()
 {
 	int i, nthreads;
 	double pi, sum = 0.0;

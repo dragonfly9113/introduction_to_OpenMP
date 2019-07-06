@@ -12,7 +12,7 @@ static long num_steps = 1000000000;
 double step;
 
 // The original sequential version
-int main_orig()
+int main()
 {
 	int i;
 	double x, pi, sum = 0.0;
@@ -24,6 +24,8 @@ int main_orig()
 	start = omp_get_wtime();
 	step = 1.0 / (double)num_steps;
 
+// Adding the following line is the simplest way to parallelize this problem:
+//#pragma omp parallel for private(x) reduction(+:sum)
 	for (i = 0; i < num_steps; i++)
 	{
 		x = (i + 0.5) * step;

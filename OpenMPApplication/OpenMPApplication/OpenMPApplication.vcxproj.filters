@@ -35,7 +35,7 @@
     <ClCompile Include="Ex_4_pi_with_loop_construct.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mendel.cpp">
+    <ClCompile Include="Mandel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
