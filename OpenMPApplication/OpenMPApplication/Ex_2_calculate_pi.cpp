@@ -12,7 +12,7 @@ static long num_steps = 1000000000;
 double step;
 
 // The original sequential version
-int main()
+int main_orig()
 {
 	int i;
 	double x, pi, sum = 0.0;

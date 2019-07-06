@@ -169,6 +169,7 @@
     <ClCompile Include="Ex_3_calc_pi_with_sync.cpp" />
     <ClCompile Include="Ex_4_pi_with_loop_construct.cpp" />
     <ClCompile Include="Mandel.cpp" />
+    <ClCompile Include="Linked.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
