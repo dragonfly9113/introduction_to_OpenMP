@@ -70,6 +70,8 @@ int main(int argc, char *argv[]) {
 	head = p;
 
 	start = omp_get_wtime();
+
+#pragma omp parallel
 	{
 		while (p != NULL) {
 			processwork(p);

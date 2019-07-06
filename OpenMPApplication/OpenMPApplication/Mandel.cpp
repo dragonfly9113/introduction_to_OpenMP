@@ -38,6 +38,8 @@ int main_Mandel() {
 	int i, j;
 	double area, error, eps = 1.0e-5;
 
+	int nthreads;
+
 	printf("Num of CPU: %d\n", omp_get_num_procs());
 	printf("Max threads: %d\n", omp_get_max_threads());
 
@@ -47,12 +49,21 @@ int main_Mandel() {
 	//   testing each point to see whether it is inside or outside the set.
 
 //#pragma omp parallel for default(shared) private(c,j) firstprivate(eps)
-#pragma omp parallel for default(shared) private(c,j) firstprivate(eps)
-	for (int i = 0; i < NPOINTS; i++) {
-		for (int j = 0; j < NPOINTS; j++) {
-			c.r = -2.0 + 2.5*(double)(i) / (double)(NPOINTS)+eps;
-			c.i = 1.125*(double)(j) / (double)(NPOINTS)+eps;
-			testpoint(c);
+#pragma omp parallel default(shared)
+	{
+		int id, nthrds;
+
+		id = omp_get_thread_num();
+		nthrds = omp_get_num_threads();
+		if (id == 0) nthreads = nthrds;
+
+#pragma omp for private(c,j) firstprivate(eps)
+		for (int i = 0; i < NPOINTS; i++) {
+			for (int j = 0; j < NPOINTS; j++) {
+				c.r = -2.0 + 2.5*(double)(i) / (double)(NPOINTS)+eps;
+				c.i = 1.125*(double)(j) / (double)(NPOINTS)+eps;
+				testpoint(c);
+			}
 		}
 	}
 
@@ -61,6 +72,7 @@ int main_Mandel() {
 	area = 2.0*2.5*1.125*(double)(NPOINTS*NPOINTS - numoutside) / (double)(NPOINTS*NPOINTS);
 	error = area / (double)NPOINTS;
 
+	printf("nthreads = %d\n", nthreads);
 	printf("Area of Mandlebrot set = %12.8f +/- %12.8f\n", area, error);
 }
 
