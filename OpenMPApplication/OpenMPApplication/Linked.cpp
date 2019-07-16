@@ -71,12 +71,29 @@ int main(int argc, char *argv[]) {
 
 	start = omp_get_wtime();
 
-#pragma omp parallel
-	{
-		while (p != NULL) {
-			processwork(p);
-			p = p->next;
-		}
+// Original non-parallel version
+#if 0
+	while (p != NULL) {
+		processwork(p);
+		p = p->next;
+	}
+#endif
+
+// Parallel version #1:
+	int count = 0;
+	while (p != NULL) {
+		p = p->next;
+		count++;
+	}
+	p = head;
+	struct node *parr[N];
+	for (int i = 0; i < count; i++) {
+		parr[i] = p;
+		p = p->next;
+	}
+#pragma omp parallel for schedule(static, 1)
+	for (int i = 0; i < count; i++) {
+		processwork(parr[i]);
 	}
 
 	end = omp_get_wtime();
