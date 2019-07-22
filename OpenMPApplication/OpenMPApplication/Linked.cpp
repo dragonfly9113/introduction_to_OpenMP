@@ -80,6 +80,7 @@ int main(int argc, char *argv[]) {
 #endif
 
 // Parallel version #1:
+#if 0
 	int count = 0;
 	while (p != NULL) {
 		p = p->next;
@@ -95,6 +96,17 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < count; i++) {
 		processwork(parr[i]);
 	}
+#endif
+
+// Parallel version #2: use task contruct
+//#if 0
+#pragma omp parallel
+	while (p != NULL) {
+#pragma omp task
+		processwork(p);
+		p = p->next;
+	}
+//#endif
 
 	end = omp_get_wtime();
 	p = head;
