@@ -56,7 +56,7 @@ struct node* init_list(struct node* p) {
 	return head;
 }
 
-int main(int argc, char *argv[]) {
+int main_linked(int argc, char *argv[]) {
 	double start, end;
 	struct node *p = NULL;
 	struct node *temp = NULL;
@@ -102,7 +102,7 @@ int main(int argc, char *argv[]) {
 //#if 0
 #pragma omp parallel
 	while (p != NULL) {
-#pragma omp task
+//#pragma omp task
 		processwork(p);
 		p = p->next;
 	}
