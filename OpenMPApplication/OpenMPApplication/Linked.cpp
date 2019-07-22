@@ -56,7 +56,7 @@ struct node* init_list(struct node* p) {
 	return head;
 }
 
-int main_linked(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 	double start, end;
 	struct node *p = NULL;
 	struct node *temp = NULL;
@@ -99,14 +99,18 @@ int main_linked(int argc, char *argv[]) {
 #endif
 
 // Parallel version #2: use task contruct
-//#if 0
 #pragma omp parallel
-	while (p != NULL) {
-//#pragma omp task
-		processwork(p);
-		p = p->next;
+	{
+#pragma omp single
+		{
+			//struct node *p = head;
+			while (p) {
+#pragma omp task firstprivate(p)
+				processwork(p);
+				p = p->next;
+			}
+		}
 	}
-//#endif
 
 	end = omp_get_wtime();
 	p = head;
