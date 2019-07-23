@@ -56,7 +56,7 @@ struct node* init_list(struct node* p) {
 	return head;
 }
 
-int main(int argc, char *argv[]) {
+int main_linked(int argc, char *argv[]) {
 	double start, end;
 	struct node *p = NULL;
 	struct node *temp = NULL;
